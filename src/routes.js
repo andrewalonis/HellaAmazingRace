@@ -7,6 +7,7 @@ import IndexPage from './components/IndexPage';
 import NotFoundPage from './components/NotFoundPage';
 import LoginPage from './components/LoginPage';
 import CreateRace from './components/CreateRace';
+import LoadRace from './components/LoadRace';
 import RunRace from './components/RunRace';
 
 const routes = (
@@ -14,6 +15,7 @@ const routes = (
     <IndexRoute component={LoginPage}/>
     <Route path="/home" component={IndexPage}/>
     <Route path="/CreateRace" component = {CreateRace}/>
+    <Route path="/LoadRace" component = {LoadRace}/>
     <Route path="/RunRace" component = {RunRace}/>
     <Route path="*" component={NotFoundPage}/>
   </Route>

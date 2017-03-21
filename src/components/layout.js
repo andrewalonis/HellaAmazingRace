@@ -29,6 +29,9 @@ export default class Layout extends React.Component {
                             <a href="CreateRace">Create Race</a>
                         </li>
                         <li>
+                            <a href="LoadRace">Load Race</a>
+                        </li>
+                        <li>
                             <a href="RunRace">Run Race</a>
                         </li>
                     </ul>
