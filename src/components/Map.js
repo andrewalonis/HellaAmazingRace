@@ -9,16 +9,20 @@ export default class RaceMap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      lat: 37.8123698,
-      lng: -122.00116100000002,
-      // lat: null,
-      // lng: null
+      lat: null,
+      lng: null
     }
+    window.markers = [];
   }
 
 
 
   getCurrentLocation(cb) {
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
     navigator.geolocation.getCurrentPosition((location) => {
       this.setState({
         lat: location.coords.latitude,
@@ -28,20 +32,20 @@ export default class RaceMap extends React.Component {
       if (cb) {
         cb('Done fetching location, ready.');
       }
-    })
+    }, (err) => {
+      console.log('error occurred: ', err);
+    }, options)
   }
 
 
 
   componentDidMount() {
-    this.renderMap();
-
-    // this.getCurrentLocation((ready) => {
-    //   if (ready) {
-    //     // one time map render on page ready
-    //     this.renderMap();
-    //   }
-    // });
+    this.getCurrentLocation((ready) => {
+      if (ready) {
+        // one time map render on page ready
+        this.renderMap();
+      }
+    });
   }
 
 
@@ -52,6 +56,7 @@ export default class RaceMap extends React.Component {
     window.map = new google.maps.Map(document.getElementById('map'), {
       zoom: 15,
       center: currLoc
+
     });
     window.marker = new google.maps.Marker({
       position: currLoc,
@@ -60,6 +65,7 @@ export default class RaceMap extends React.Component {
 
     marker.setAnimation(google.maps.Animation.BOUNCE);
   }
+
 
 
   render() {

@@ -13,10 +13,10 @@ export default class PubMap extends React.Component {
       // lng: -122.00116100000002,
       lat: null,
       lng: null,
-      checkpointsLoaded: false
     }
     window.lineCoords = [];
     window.markers = [];
+    window.checkpointsLoaded = false;
   }
 
 
@@ -44,6 +44,7 @@ export default class PubMap extends React.Component {
 
 
   componentDidUpdate() {
+    window.currentLocation = [this.state.lat, this.state.lng];
     // when current location in state changes, redraw map with path
     pubnub.publish({
       channel:pnChannel, 
@@ -64,6 +65,7 @@ export default class PubMap extends React.Component {
     window.map = new google.maps.Map(document.getElementById('map'), {
       zoom: 15,
       center: currLoc
+
     });
     window.marker = new google.maps.Marker({
       position: currLoc,
@@ -75,7 +77,12 @@ export default class PubMap extends React.Component {
 
 
 
-  getCurrentLocation(cb) {
+   getCurrentLocation(cb) {
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
     navigator.geolocation.getCurrentPosition((location) => {
       this.setState({
         lat: location.coords.latitude,
@@ -85,7 +92,9 @@ export default class PubMap extends React.Component {
       if (cb) {
         cb('Done fetching location, ready.');
       }
-    })
+    }, (err) => {
+      console.log('error occurred: ', err);
+    }, options)
   }
 
 
@@ -95,23 +104,23 @@ export default class PubMap extends React.Component {
     let lat = payload.message.lat;
     let lng = payload.message.lng;
 
-    if (payload.message.markers) {
+    if (payload.message.markers && !window.checkpointsLoaded) {
       let markersArr = this.generateMarkersArray(payload.message.markers);
 
       // clear out old checkpoint markers first
-      // if (window.markers.length) {
-      //   while (markers.length) {
-      //     console.log(markers);
-      //     markers[markers.length - 1].setMap(null);
-      //     markers[markers.length - 1] = null;
-      //     markers.splice(0, markers.length - 1);
-      //   }
-      // }
+      if (window.markers.length) {
+        while (markers.length) {
+          markers[0].setMap(null);
+          markers.shift();
+        }
+      }
 
       // add most recent search checkpoints
       markersArr.forEach((location, order) => {
         this.createMarker(location, order);
       });
+
+      window.checkpointsLoaded = true;
     }
 
 

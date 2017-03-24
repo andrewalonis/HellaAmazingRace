@@ -24,15 +24,33 @@ import session from 'express-session';
 //passport
 var Strategy = require('passport-facebook').Strategy;
 
-passport.use(new Strategy({
-  clientID: '630724287121611',
-  clientSecret: '39b0e9bbb91cdb757f264099dff78b0b',
-  callbackURL: 'http://localhost:3000/auth/facebook/callback'
-},
-  function(accessToken, refreshToken, profile, cb) {
-    return cb(null, profile);
-  }
-));
+// production facebook auth info
+if (process.env.NODE_ENV === 'production') {
+  console.log('>>in production environment');
+  passport.use(new Strategy({
+    clientID: '630724287121611',
+    clientSecret: '39b0e9bbb91cdb757f264099dff78b0b',
+    callbackURL: 'https://hella-amazing-race.herokuapp.com/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'name', 'gender', 'picture.type(large)']
+  },
+    function(accessToken, refreshToken, profile, cb) {
+      return cb(null, profile);
+    }
+  ));
+  
+} else {  // local development facebook auth info (test app)
+  console.log('>>in development environment');
+  passport.use(new Strategy({
+    clientID: '634348233425883',
+    clientSecret: '63219faae4bd288de878264586212ac2',
+    callbackURL: 'http://localhost:3000/auth/facebook/callback',
+    profileFields: ['id', 'displayName', 'name', 'gender', 'picture.type(large)']
+  },
+    function(accessToken, refreshToken, profile, cb) {
+      return cb(null, profile);
+    }
+  ));
+}
 
 passport.serializeUser(function(user, cb) {
   cb(null, user);
@@ -77,8 +95,12 @@ app.get('/auth/facebook/callback',
   });
 
 
-///// get saved race route
+///// GET Requests /////
 
+// get user displayName on successful login
+app.get('/username', util.isLoggedIn, (req, res) => {
+  res.send(req.user);
+});
 
 // wildcard route for react routing
 app.get('*', util.isLoggedIn, (req, res) => {
@@ -93,7 +115,7 @@ app.post('/saveRace', RaceHelpers.storeSavedRace);
 
 app.post('/loadRace', RaceHelpers.loadRaceData);
 
-
+app.post('/saveRaceResults', RaceHelpers.saveRaceResults);
 
 
 
