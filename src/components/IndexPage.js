@@ -53,13 +53,22 @@ export default class IndexPage extends React.Component {
         </h4>
         <div>
           {
-            this.state.raceResults.map((race) =>
-              <p>
-                Race: {race.title}<br></br>
-                Winner: {race.winner}<br></br>
-                Duration: {race.time}
-              </p>
-            )
+            <table>
+              <tbody>
+                <tr>
+                  <th>Race</th>
+                  <th>Winner</th>
+                  <th>Duration</th>
+                </tr>
+                {this.state.raceResults.map((race) =>
+                  <tr>
+                    <td>{race.title}</td>
+                    <td>{race.winner}</td>
+                    <td>{race.time}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           }
         </div>
 

@@ -21,6 +21,15 @@ body {
   }
 }
 
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th, td {
+  width: 100px;
+}
+
 
 /*Geosuggest autocomplete styling*/
 
