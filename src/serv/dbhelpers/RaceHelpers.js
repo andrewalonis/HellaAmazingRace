@@ -35,6 +35,16 @@ exports.loadRaceData = (req, res) => {
   })
 }
 
+exports.loadRaceResults = (req, res) => {
+  Results.find().exec((err, raceData) => {
+    if (!raceData) {
+      res.send('No previous race results...');
+    } else {
+      res.send(raceData);
+    }
+  })
+}
+
 exports.saveRaceResults = (req, res) => {
   let raceResults = new Results({
     title: req.body.title,

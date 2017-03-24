@@ -8,12 +8,14 @@ export default class IndexPage extends React.Component {
     super(props);
     this.state = {
       displayName: null,
-      userPhoto: null
+      userPhoto: null,
+      raceResults: []
     }
   }
 
   componentDidMount() {
     this.getUserData();
+    this.getRaceResults();
   }
 
   getUserData() {
@@ -23,7 +25,16 @@ export default class IndexPage extends React.Component {
         window.currentUser = res.displayName;
         this.setState({
           displayName: res.displayName,
-          userPhoto: res.photos[0].value
+          // userPhoto: res.photos[0].value
+        });
+      });
+  }
+
+  getRaceResults() {
+    $.post('/loadRaceResults')
+      .done((res) => {
+        this.setState({
+          raceResults: res
         });
       });
   }
@@ -37,8 +48,19 @@ export default class IndexPage extends React.Component {
           <span><h1>Welcome {this.state.displayName}</h1></span>
         </div>
 
+        <h4>
+          Recent race results:
+        </h4>
         <div>
-          Past 10 completed race results will go here
+          {
+            this.state.raceResults.map((race) =>
+              <p>
+                Race: {race.title}<br></br>
+                Winner: {race.winner}<br></br>
+                Duration: {race.time}
+              </p>
+            )
+          }
         </div>
 
       </div>
