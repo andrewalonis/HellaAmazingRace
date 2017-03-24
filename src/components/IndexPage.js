@@ -25,7 +25,7 @@ export default class IndexPage extends React.Component {
         window.currentUser = res.displayName;
         this.setState({
           displayName: res.displayName,
-          // userPhoto: res.photos[0].value
+          userPhoto: res.photos[0].value
         });
       });
   }
